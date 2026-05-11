@@ -1,7 +1,4 @@
-# Claude Code Status Line — Bản Việt hoá
-
-> **Fork của [daniel3303/ClaudeCodeStatusLine](https://github.com/daniel3303/ClaudeCodeStatusLine)** — tuỳ chỉnh cho người dùng Việt Nam trên Windows.
-> Xem [`CHANGELOG.fork.md`](CHANGELOG.fork.md) để biết toàn bộ thay đổi so với upstream.
+# Claude Code Status Line
 
 Status line tuỳ biến cho [Claude Code](https://claude.com/claude-code): hiển thị model, token usage, rate limit, thời gian reset trên một dòng duy nhất. Chạy như một external shell command nên không làm chậm Claude Code và không tốn thêm token nào.
 
@@ -63,15 +60,6 @@ git -C "$env:USERPROFILE\.claude\statusline" pull
 ```
 
 Không cần sửa lại `settings.json` — đường dẫn vẫn nguyên qua các version.
-
-### Đồng bộ với upstream
-
-```bash
-git remote add upstream https://github.com/daniel3303/ClaudeCodeStatusLine.git
-git fetch upstream
-git merge upstream/main
-# Giải quyết conflict trong statusline.ps1 nếu có
-```
 
 ## Yêu cầu
 
