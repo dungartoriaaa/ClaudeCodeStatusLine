@@ -289,6 +289,19 @@ if ($needsRefresh) {
     }
 }
 
+# Trả về thứ trong tuần kiểu tiếng Việt: T2..T7, CN
+function Get-VietnameseWeekday([DateTime]$dt) {
+    switch ($dt.DayOfWeek) {
+        "Monday"    { return "T2" }
+        "Tuesday"   { return "T3" }
+        "Wednesday" { return "T4" }
+        "Thursday"  { return "T5" }
+        "Friday"    { return "T6" }
+        "Saturday"  { return "T7" }
+        "Sunday"    { return "CN" }
+    }
+}
+
 # Format ISO reset time to compact local time
 function Format-ResetTime([string]$isoStr, [string]$style) {
     if (-not $isoStr -or $isoStr -eq "null") { return $null }
@@ -296,8 +309,14 @@ function Format-ResetTime([string]$isoStr, [string]$style) {
         $dt = [DateTimeOffset]::Parse($isoStr).LocalDateTime
         switch ($style) {
             "time"     { return $dt.ToString("h:mmtt").ToLower() }
-            "datetime" { return $dt.ToString("MMM d, h:mmtt").ToLower() }
-            default    { return $dt.ToString("MMM d").ToLower() }
+            "datetime" {
+                $wd = Get-VietnameseWeekday $dt
+                return "$wd $($dt.ToString('d/M')), $($dt.ToString('h:mmtt').ToLower())"
+            }
+            default    {
+                $wd = Get-VietnameseWeekday $dt
+                return "$wd $($dt.ToString('d/M'))"
+            }
         }
     } catch { return $null }
 }
@@ -309,8 +328,14 @@ function Format-EpochResetTime([object]$epoch, [string]$style) {
         $dt = [DateTimeOffset]::FromUnixTimeSeconds([long]$epoch).LocalDateTime
         switch ($style) {
             "time"     { return $dt.ToString("h:mmtt").ToLower() }
-            "datetime" { return $dt.ToString("MMM d, h:mmtt").ToLower() }
-            default    { return $dt.ToString("MMM d").ToLower() }
+            "datetime" {
+                $wd = Get-VietnameseWeekday $dt
+                return "$wd $($dt.ToString('d/M')), $($dt.ToString('h:mmtt').ToLower())"
+            }
+            default    {
+                $wd = Get-VietnameseWeekday $dt
+                return "$wd $($dt.ToString('d/M'))"
+            }
         }
     } catch { return $null }
 }

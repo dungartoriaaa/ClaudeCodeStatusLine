@@ -5,6 +5,14 @@ Upstream: [daniel3303/ClaudeCodeStatusLine](https://github.com/daniel3303/Claude
 
 Tài liệu các thay đổi của fork so với upstream. Mọi thay đổi đều tập trung vào `statusline.ps1` (bản Windows PowerShell).
 
+## [fork-1.4.2+vn-weekday] — 2026-05-11
+
+### Thay đổi
+
+- **Localize reset time sang tiếng Việt** — thay vì `may 12, 6:00pm`, hiển thị `T2 12/5, 6:00pm` (T2..T7, CN). Format ngày cũng đổi từ `MMM d` sang `d/M` cho phù hợp lịch Việt Nam.
+- Thêm hàm `Get-VietnameseWeekday($dt)` map `DayOfWeek` → `T2..T7, CN`.
+- Áp dụng cho cả `Format-ResetTime` (ISO string) và `Format-EpochResetTime` (Unix epoch).
+
 ## [fork-1.4.2] — 2026-05-11
 
 Dựa trên upstream v1.4.2.
