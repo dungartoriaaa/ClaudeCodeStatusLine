@@ -40,16 +40,25 @@ Màu theo % usage: xanh lá (<50%) → vàng (≥50%) → cam (≥70%) → đỏ
    ```powershell
    git clone https://github.com/dungartoriaaa/ClaudeCodeStatusLine.git "$env:USERPROFILE\.claude\statusline"
    ```
-2. Mở `~/.claude/settings.json`, thêm:
+2. **Lấy đường dẫn tuyệt đối** tới `statusline.ps1` (bắt buộc — xem cảnh báo bên dưới):
+   ```powershell
+   echo "$env:USERPROFILE\.claude\statusline\statusline.ps1"
+   ```
+   Kết quả ví dụ: `C:\Users\TenCuaBan\.claude\statusline\statusline.ps1`.
+3. Mở `~/.claude/settings.json`, dán **đường dẫn tuyệt đối** đó vào (thay `C:\\Users\\TenCuaBan` bằng kết quả ở bước 2, lưu ý dùng `\\` để escape trong JSON):
    ```json
    {
      "statusLine": {
        "type": "command",
-       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"%USERPROFILE%\\.claude\\statusline\\statusline.ps1\""
+       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\TenCuaBan\\.claude\\statusline\\statusline.ps1\""
      }
    }
    ```
-3. Restart Claude Code.
+4. Restart Claude Code.
+
+> ⚠ **KHÔNG dùng `%USERPROFILE%` hay `~` trong `settings.json`.** Claude Code (bản hiện tại trên Windows) **không expand** các biến môi trường / `~` trong field `command` khi nó chứa flag PowerShell — `powershell.exe` nhận chuỗi `%USERPROFILE%` như literal text → tìm thư mục tên đúng vậy → không thấy file → status line im lặng tắt, không có error. Đây là lý do "đường dẫn ảo" hay gặp.
+>
+> Nếu bắt buộc phải dùng biến (ví dụ chia sẻ config giữa nhiều máy có tên user khác nhau), bọc trong `cmd /c` để CMD expand trước rồi mới gọi PowerShell — xem [INSTALL.md](INSTALL.md) phần *Đường dẫn tuyệt đối vs biến môi trường*.
 
 Chi tiết đầy đủ (kèm hướng dẫn macOS/Linux) xem [INSTALL.md](INSTALL.md).
 
