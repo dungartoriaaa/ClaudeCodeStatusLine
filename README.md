@@ -1,77 +1,98 @@
-# Claude Code Status Line (Fork by @dungartoriaaa)
+# Claude Code Status Line — Bản Việt hoá
 
-> **Đây là fork của [daniel3303/ClaudeCodeStatusLine](https://github.com/daniel3303/ClaudeCodeStatusLine).**
-> Fork này khôi phục **thanh progress bar 10 ô** (`■■■■■■■■■□`) cho `statusline.ps1` — tính năng bị upstream loại bỏ từ v1.4.x.
-> Xem [`CHANGELOG.fork.md`](CHANGELOG.fork.md) để biết chi tiết các thay đổi.
+> **Fork của [daniel3303/ClaudeCodeStatusLine](https://github.com/daniel3303/ClaudeCodeStatusLine)** — tuỳ chỉnh cho người dùng Việt Nam trên Windows.
+> Xem [`CHANGELOG.fork.md`](CHANGELOG.fork.md) để biết toàn bộ thay đổi so với upstream.
 
-A custom status line for [Claude Code](https://claude.com/claude-code) that displays model info, token usage, rate limits, and reset times in a single compact line. It runs as an external shell command, so it does not slow down Claude Code or consume any extra tokens.
+Status line tuỳ biến cho [Claude Code](https://claude.com/claude-code): hiển thị model, token usage, rate limit, thời gian reset trên một dòng duy nhất. Chạy như một external shell command nên không làm chậm Claude Code và không tốn thêm token nào.
 
-## Screenshot
+## Ảnh chụp
 
 ![Status Line Screenshot](screenshot.png)
 
-## What it shows
+## Điểm khác biệt của fork này
 
-| Segment | Description |
-|---------|-------------|
-| **Model** | Current model name (e.g., Opus 4.7) |
-| **CWD@Branch** | Current folder name, git branch, and file changes (+/-) |
-| **Tokens** | Used / total context window tokens (% used) |
-| **Effort** | Reasoning effort level (low, med, high, xhigh) |
-| **5h** | 5-hour rate limit usage percentage and reset time |
-| **7d** | 7-day rate limit usage percentage and reset time |
-| **Extra** | Extra usage credits spent / limit (if enabled) |
-| **Update** | Appears when a new version is available (checked every 24h) |
+So với upstream `v1.4.2`, fork này thêm/sửa:
 
-Usage percentages are color-coded: green (<50%) → yellow (≥50%) → orange (≥70%) → red (≥90%).
+| Thay đổi | Mô tả |
+|---|---|
+| **Thanh progress 10 ô** | Khôi phục `■■■■■■■■■□` cho cả tokens / 5h / 7d (upstream đã bỏ từ v1.4.x). Màu thay đổi theo % usage. |
+| **Thứ trong tuần kiểu Việt** | `@may 12, 6:00pm` → `@18:00, T2 12/5`. Map `T2..T7, CN` thay vì `Mon..Sun`. |
+| **Giờ 24h** | `@6:00pm` → `@18:00`. Format `HH:mm` thay vì `h:mmtt`. |
+| **Ngày kiểu Việt** | `MMM d` (`may 12`) → `d/M` (`12/5`). |
+| **Sửa encoding UTF-8** | Set `[Console]::OutputEncoding = UTF8` để Windows PowerShell 5.1 in đúng `■` `□`, không bị `�-�`. |
+| **File UTF-8 with BOM** | Đảm bảo PS 5.1 đọc đúng ký tự non-ASCII trong source. |
 
-## Installation
+## Các thành phần trên status line
 
-Ask Claude Code:
+| Phần | Ý nghĩa |
+|---|---|
+| **Model** | Tên model hiện tại (vd: `Opus 4.7 1M`) |
+| **CWD@Branch** | Thư mục làm việc, git branch, số dòng thay đổi (+/-) |
+| **Tokens** | Số token đã dùng / tổng context window + thanh bar + % |
+| **Effort** | Reasoning effort: `low`, `med`, `high`, `xhigh`, `max` |
+| **5h** | % rate limit 5 giờ + thanh bar + thời gian reset (24h) |
+| **7d** | % rate limit 7 ngày + thanh bar + thời gian reset (`HH:mm, T# d/M`) |
+| **Extra** | Số credit extra đã dùng / hạn mức (nếu bật) |
+| **Update** | Hiển thị khi có version mới (check mỗi 24h) |
 
-> Clone https://github.com/daniel3303/ClaudeCodeStatusLine to `~/.claude/statusline/` (or `%USERPROFILE%\.claude\statusline\` on Windows) and configure it as my status bar by following its INSTALL.md.
+Màu theo % usage: xanh lá (<50%) → vàng (≥50%) → cam (≥70%) → đỏ (≥90%).
 
-Claude will clone the repo to that path, pick the right script for your OS, and update `settings.json`. Full step-by-step instructions Claude follows live in [INSTALL.md](INSTALL.md).
+## Cài đặt (Windows / PowerShell)
 
-Restart Claude Code after Claude saves the configuration.
+1. Clone fork về `~/.claude/statusline/`:
+   ```powershell
+   git clone https://github.com/dungartoriaaa/ClaudeCodeStatusLine.git "$env:USERPROFILE\.claude\statusline"
+   ```
+2. Mở `~/.claude/settings.json`, thêm:
+   ```json
+   {
+     "statusLine": {
+       "type": "command",
+       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"%USERPROFILE%\\.claude\\statusline\\statusline.ps1\""
+     }
+   }
+   ```
+3. Restart Claude Code.
 
-### Updating
+Chi tiết đầy đủ (kèm hướng dẫn macOS/Linux) xem [INSTALL.md](INSTALL.md).
 
-When the status line shows a new release is available, ask Claude:
+## Cập nhật
 
-> Find my installed status bar and update it.
-
-Or update it yourself:
-
-```bash
-git -C ~/.claude/statusline pull
+```powershell
+git -C "$env:USERPROFILE\.claude\statusline" pull
 ```
 
-No `settings.json` changes are needed — the path stays valid across versions.
+Không cần sửa lại `settings.json` — đường dẫn vẫn nguyên qua các version.
 
-## Requirements
+### Đồng bộ với upstream
 
-- Claude Code with OAuth authentication (Pro/Max subscription for rate-limit and extra-usage data)
-- `git` in `PATH`
-- macOS / Linux: `jq` and `curl`
-- Windows: PowerShell 5.1+ (default on Windows 10/11)
+```bash
+git remote add upstream https://github.com/daniel3303/ClaudeCodeStatusLine.git
+git fetch upstream
+git merge upstream/main
+# Giải quyết conflict trong statusline.ps1 nếu có
+```
 
-## Caching
+## Yêu cầu
 
-Usage data from the Anthropic API is cached for 60 seconds at `/tmp/claude/statusline-usage-cache-<hash>.json` (or `%TEMP%\claude\...` on Windows). Release checks are cached for 24 hours. Both caches are shared across concurrent Claude Code instances to avoid rate limits.
+- Claude Code đã đăng nhập OAuth (Pro/Max để có dữ liệu rate-limit và extra-usage)
+- `git` trong `PATH`
+- **Windows:** PowerShell 5.1+ (mặc định Windows 10/11)
+- **macOS / Linux:** `jq` và `curl`
 
-## Update Notifications
+## Cache
 
-The status line checks GitHub for new releases once every 24 hours. When a newer version is available, a second line appears below the status line. The check fails silently if the API is unreachable.
+Dữ liệu usage từ Anthropic API được cache 60 giây tại `%TEMP%\claude\statusline-usage-cache-<hash>.json` (hoặc `/tmp/claude/...` trên *nix). Release check cache 24 giờ. Cache share giữa các Claude Code instance để tránh rate limit.
+
+## Thông báo cập nhật
+
+Status line check GitHub mỗi 24 giờ. Khi có version mới, một dòng phụ sẽ xuất hiện bên dưới. Nếu API không truy cập được, check sẽ thất bại im lặng.
 
 ## License
 
 MIT
 
-## Author
+## Credits
 
-Daniel Oliveira
-
-[![Website](https://img.shields.io/badge/Website-FF6B6B?style=for-the-badge&logo=safari&logoColor=white)](https://danielapoliveira.com/)
-[![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/daniel_not_nerd)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/daniel-ap-oliveira/)
+- Upstream tác giả: **Daniel Oliveira** — [Website](https://danielapoliveira.com/) · [X](https://x.com/daniel_not_nerd) · [LinkedIn](https://www.linkedin.com/in/daniel-ap-oliveira/)
+- Fork maintainer: **[@dungartoriaaa](https://github.com/dungartoriaaa)**
