@@ -5,7 +5,7 @@
 
 Status line tuỳ biến cho [Claude Code](https://claude.com/claude-code): hiển thị model, token usage, rate limit, thời gian reset trên một dòng duy nhất. Chạy như một external shell command nên không làm chậm Claude Code và không tốn thêm token nào.
 
-## Ảnh chụp
+## Screenshot
 
 ![Status Line Screenshot](screenshot.png)
 
