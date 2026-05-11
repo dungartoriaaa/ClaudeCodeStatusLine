@@ -1,4 +1,8 @@
-# Claude Code Status Line
+# Claude Code Status Line (Fork by @dungartoriaaa)
+
+> **Đây là fork của [daniel3303/ClaudeCodeStatusLine](https://github.com/daniel3303/ClaudeCodeStatusLine).**
+> Fork này khôi phục **thanh progress bar 10 ô** (`■■■■■■■■■□`) cho `statusline.ps1` — tính năng bị upstream loại bỏ từ v1.4.x.
+> Xem [`CHANGELOG.fork.md`](CHANGELOG.fork.md) để biết chi tiết các thay đổi.
 
 A custom status line for [Claude Code](https://claude.com/claude-code) that displays model info, token usage, rate limits, and reset times in a single compact line. It runs as an external shell command, so it does not slow down Claude Code or consume any extra tokens.
 

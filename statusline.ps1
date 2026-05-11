@@ -1,4 +1,7 @@
-# Source: https://github.com/daniel3303/ClaudeCodeStatusLine
+﻿# Source: https://github.com/daniel3303/ClaudeCodeStatusLine
+
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 
 $VERSION = "1.4.2"
 # Single line: Model | tokens | %used | %remain | think | 5h bar @reset | 7d bar @reset | extra
@@ -51,6 +54,14 @@ function Get-UsageColor([int]$pct) {
 }
 
 # Null coalescing helper for PowerShell 5 compatibility (?? is PS7+ only)
+function Get-UsageBar([int]$pct) {
+    $f = [math]::Floor($pct / 10)
+    if ($f -gt 10) { $f = 10 }
+    if ($f -lt 0) { $f = 0 }
+    $c = Get-UsageColor $pct
+    return "${c}" + ("■" * $f) + "${esc}[0m${esc}[2m" + ("□" * (10 - $f)) + "${esc}[0m"
+}
+
 function Coalesce($value, $default) {
     if ($null -ne $value) { return $value } else { return $default }
 }
@@ -146,7 +157,7 @@ if ($cwd) {
 }
 
 $out += " ${dim}|${reset} "
-$out += "${orange}${usedTokens}/${totalTokens}${reset} ${dim}(${reset}${green}${pctUsed}%${reset}${dim})${reset}"
+$out += "${orange}${usedTokens}/${totalTokens}${reset} $(Get-UsageBar $pctUsed) ${dim}(${reset}${green}${pctUsed}%${reset}${dim})${reset}"
 $out += " ${dim}|${reset} "
 $out += "effort: "
 switch ($effortLevel) {
@@ -345,7 +356,7 @@ if ($effectiveBuiltin) {
     if ($null -ne $builtinFiveHourPct) {
         $fiveHourPct = [math]::Floor([double]$builtinFiveHourPct)
         $fiveHourColor = Get-UsageColor $fiveHourPct
-        $out += "${sep}${white}5h${reset} ${fiveHourColor}${fiveHourPct}%${reset}"
+        $out += "${sep}${white}5h${reset} $(Get-UsageBar $fiveHourPct) ${fiveHourColor}${fiveHourPct}%${reset}"
         $fiveHourReset = Format-EpochResetTime $builtinFiveHourReset "time"
         if ($fiveHourReset) { $out += " ${dim}@${fiveHourReset}${reset}" }
     }
@@ -353,7 +364,7 @@ if ($effectiveBuiltin) {
     if ($null -ne $builtinSevenDayPct) {
         $sevenDayPct = [math]::Floor([double]$builtinSevenDayPct)
         $sevenDayColor = Get-UsageColor $sevenDayPct
-        $out += "${sep}${white}7d${reset} ${sevenDayColor}${sevenDayPct}%${reset}"
+        $out += "${sep}${white}7d${reset} $(Get-UsageBar $sevenDayPct) ${sevenDayColor}${sevenDayPct}%${reset}"
         $sevenDayReset = Format-EpochResetTime $builtinSevenDayReset "datetime"
         if ($sevenDayReset) { $out += " ${dim}@${sevenDayReset}${reset}" }
     }
@@ -397,7 +408,7 @@ if ($effectiveBuiltin) {
         $fiveHourReset = Format-ResetTime $fiveHourResetIso "time"
         $fiveHourColor = Get-UsageColor $fiveHourPct
 
-        $out += "${sep}${white}5h${reset} ${fiveHourColor}${fiveHourPct}%${reset}"
+        $out += "${sep}${white}5h${reset} $(Get-UsageBar $fiveHourPct) ${fiveHourColor}${fiveHourPct}%${reset}"
         if ($fiveHourReset) { $out += " ${dim}@${fiveHourReset}${reset}" }
 
         # ---- 7-day (weekly) ----
@@ -406,7 +417,7 @@ if ($effectiveBuiltin) {
         $sevenDayReset = Format-ResetTime $sevenDayResetIso "datetime"
         $sevenDayColor = Get-UsageColor $sevenDayPct
 
-        $out += "${sep}${white}7d${reset} ${sevenDayColor}${sevenDayPct}%${reset}"
+        $out += "${sep}${white}7d${reset} $(Get-UsageBar $sevenDayPct) ${sevenDayColor}${sevenDayPct}%${reset}"
         if ($sevenDayReset) { $out += " ${dim}@${sevenDayReset}${reset}" }
 
         $out += Format-ExtraUsage $parsedUsage
