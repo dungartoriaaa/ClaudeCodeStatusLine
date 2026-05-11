@@ -5,6 +5,12 @@ Upstream: [daniel3303/ClaudeCodeStatusLine](https://github.com/daniel3303/Claude
 
 Tài liệu các thay đổi của fork so với upstream. Mọi thay đổi đều tập trung vào `statusline.ps1` (bản Windows PowerShell).
 
+## [fork-1.4.2+vn-time] — 2026-05-11
+
+### Thay đổi
+
+- **Đổi sang giờ 24h và đảo thứ tự thời gian/ngày** — thay vì `T2 12/5, 6:00pm`, hiển thị `18:00, T2 12/5`. Tương tự, segment `time` đổi từ `6:00pm` sang `18:00`.
+
 ## [fork-1.4.2+vn-weekday] — 2026-05-11
 
 ### Thay đổi

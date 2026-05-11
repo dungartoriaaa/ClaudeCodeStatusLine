@@ -308,10 +308,10 @@ function Format-ResetTime([string]$isoStr, [string]$style) {
     try {
         $dt = [DateTimeOffset]::Parse($isoStr).LocalDateTime
         switch ($style) {
-            "time"     { return $dt.ToString("h:mmtt").ToLower() }
+            "time"     { return $dt.ToString("HH:mm") }
             "datetime" {
                 $wd = Get-VietnameseWeekday $dt
-                return "$wd $($dt.ToString('d/M')), $($dt.ToString('h:mmtt').ToLower())"
+                return "$($dt.ToString('HH:mm')), $wd $($dt.ToString('d/M'))"
             }
             default    {
                 $wd = Get-VietnameseWeekday $dt
@@ -327,10 +327,10 @@ function Format-EpochResetTime([object]$epoch, [string]$style) {
     try {
         $dt = [DateTimeOffset]::FromUnixTimeSeconds([long]$epoch).LocalDateTime
         switch ($style) {
-            "time"     { return $dt.ToString("h:mmtt").ToLower() }
+            "time"     { return $dt.ToString("HH:mm") }
             "datetime" {
                 $wd = Get-VietnameseWeekday $dt
-                return "$wd $($dt.ToString('d/M')), $($dt.ToString('h:mmtt').ToLower())"
+                return "$($dt.ToString('HH:mm')), $wd $($dt.ToString('d/M'))"
             }
             default    {
                 $wd = Get-VietnameseWeekday $dt
