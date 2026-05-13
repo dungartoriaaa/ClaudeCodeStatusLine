@@ -3,7 +3,7 @@
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
-$VERSION = "1.4.2"
+$VERSION = "1.4.3"
 # Single line: Model | tokens | %used | %remain | think | 5h bar @reset | 7d bar @reset | extra
 
 # Read input from stdin
@@ -109,9 +109,10 @@ $remainComma = Format-Commas ($size - $current)
 # Config directory (respects CLAUDE_CONFIG_DIR override)
 $claudeConfigDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $env:USERPROFILE ".claude" }
 
-# Check reasoning effort
-$effortLevel = "medium"
-if ($env:CLAUDE_CODE_EFFORT_LEVEL) {
+$effortLevel = $null
+if ($data.effort.level) {
+    $effortLevel = [string]$data.effort.level
+} elseif ($env:CLAUDE_CODE_EFFORT_LEVEL) {
     $effortLevel = $env:CLAUDE_CODE_EFFORT_LEVEL
 } else {
     $settingsPath = Join-Path $claudeConfigDir "settings.json"
@@ -122,6 +123,7 @@ if ($env:CLAUDE_CODE_EFFORT_LEVEL) {
         } catch {}
     }
 }
+if (-not $effortLevel) { $effortLevel = "medium" }
 
 # ===== Build single-line output =====
 $out = ""
